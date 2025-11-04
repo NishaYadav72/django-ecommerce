@@ -1,0 +1,774 @@
+{% extends 'core/base.html' %}
+{% load static %}
+{% block content %}
+
+<style>
+/* 🌸 Custom Styling */
+.checkout-container {
+    background: linear-gradient(to right, #f8fafc, #f1f5f9);
+    min-height: 90vh;
+    padding: 2rem 0;
+}
+
+.checkout-wrapper {
+    display: grid;
+    grid-template-columns: 1.5fr 1fr; /* Left: Address, Right: Summary */
+    gap: 2rem;
+    align-items: start;
+}
+
+.checkout-card {
+    background: #ffffff;
+    border-radius: 16px;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1);
+    padding: 2rem;
+    transition: transform 0.3s ease;
+}
+.checkout-card:hover {
+    transform: translateY(-3px);
+}
+
+.checkout-title {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: #1e293b;
+    margin-bottom: 1.5rem;
+}
+
+.checkout-label {
+    color: #475569;
+    font-weight: 500;
+}
+
+.checkout-input,
+.checkout-select,
+.checkout-textarea {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+    transition: 0.3s;
+}
+.checkout-input:focus,
+.checkout-select:focus,
+.checkout-textarea:focus {
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 3px rgba(59,130,246,0.2);
+    outline: none;
+}
+
+.address-box {
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+    padding: 1rem;
+    background-color: #f8fafc;
+    transition: 0.2s;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.address-box:hover {
+    background-color: #f1f5f9;
+}
+
+.address-details {
+    flex: 1;
+}
+
+.address-actions {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 8px;
+    margin-left: 1rem;
+}
+
+.address-actions button {
+    font-size: 0.8rem;
+    padding: 5px 10px;
+    border-radius: 6px;
+}
+
+#continue-btn {
+    background: linear-gradient(90deg, #2563eb, #1d4ed8);
+    color: white;
+    font-weight: 600;
+    transition: 0.3s;
+}
+/* Flex layout for Order Summary */
+.order-summary-flex {
+    display: flex;
+    gap: 25px;
+    align-items: flex-start;
+    padding: 15px 0;
+}
+
+/* Image container */
+.order-img-container {
+    flex-shrink: 0; /* image size fixed */
+}
+
+/* Image styling */
+.order-img {
+    width: 280px;
+    height: 350px;
+    object-fit: cover;
+    border-radius: 12px;
+}
+
+/* Details container */
+.order-details {
+    flex: 1; /* take remaining space */
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+/* Product name */
+.order-details h5 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #1e293b;
+    margin-bottom: 0.5rem;
+}
+
+/* Price & Discount */
+.order-details p {
+    margin: 0.3rem 0;
+    font-size: 1rem;
+    color: #475569;
+}
+
+.order-details p.text-green-600 {
+    font-weight: 600;
+}
+
+/* Color info */
+.order-details .color-info {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 8px 0;
+}
+
+/* Quantity selector */
+.order-details .quantity-selector {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.order-details .quantity-selector button {
+    background: #e2e8f0;
+    padding: 5px 12px;
+    border-radius: 6px;
+    font-size: 1rem;
+    transition: 0.3s;
+}
+
+.order-details .quantity-selector button:hover {
+    background: #cbd5e1;
+}
+
+/* Continue button */
+#continue-btn {
+    background: linear-gradient(90deg, #2563eb, #1d4ed8);
+    color: white;
+    font-weight: 600;
+    transition: 0.3s;
+    margin-top: 15px;
+}
+#continue-btn:hover {
+    background: linear-gradient(90deg, #1d4ed8, #2563eb);
+    transform: scale(1.02);
+}
+
+
+/* Original price strike-through */
+.order-details p.line-through {
+    color: #9ca3af; /* gray */
+    text-decoration: line-through;
+    font-size: 1rem;
+    margin: 0.3rem 0;
+}
+
+/* Discount badge */
+.order-details .discount-badge {
+    display: inline-block;
+    background-color: #dcfce7; /* light green */
+    color: #16a34a; /* green */
+    font-weight: 600;
+    font-size: 0.9rem;
+    padding: 2px 6px;
+    border-radius: 6px;
+    margin: 0.3rem 0;
+}
+
+/* Discounted / Payable Price */
+.order-details p.text-green-600 {
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin: 0.3rem 0;
+}
+
+
+/* Responsive */
+@media (max-width: 768px) {
+    .order-summary-flex {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+    }
+    .order-img {
+        width: 200px;
+        height: 250px;
+    }
+    .order-details {
+        width: 100%;
+        margin-top: 15px;
+        align-items: center;
+    }
+    .order-details .quantity-selector {
+        justify-content: center;
+    }
+}
+
+
+
+
+/* Add New Address Button Styling */
+.add-address-btn {
+    display: block; /* Ensure it's visible */
+    width: 100%;
+    padding: 12px 0;
+    font-size: 1rem;
+    font-weight: 600;
+    color: white;
+    background: linear-gradient(90deg, #2563eb, #1d4ed8);
+    border: none;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin: 20px 0; /* Space above and below */
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+
+.add-address-btn:hover {
+    background: linear-gradient(90deg, #1d4ed8, #2563eb);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 14px rgba(0,0,0,0.15);
+}
+
+
+/* Edit & Delete Buttons Styling */
+.address-actions .edit-btn,
+.address-actions .delete-btn {
+    width: 80px;
+    padding: 6px 0;
+    font-size: 0.85rem;
+    font-weight: 600;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-align: center;
+    box-shadow: 0 3px 8px rgba(0,0,0,0.1);
+}
+
+/* Edit Button */
+.address-actions .edit-btn {
+    background: #facc15; /* Yellow */
+    color: #1e293b;
+}
+.address-actions .edit-btn:hover {
+    background: #eab308;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+}
+
+/* Delete Button */
+.address-actions .delete-btn {
+    background: #ef4444; /* Red */
+    color: white;
+}
+.address-actions .delete-btn:hover {
+    background: #dc2626;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+}
+
+#continue-btn {
+    background: linear-gradient(90deg, #2563eb, #1d4ed8); /* Blue gradient */
+    color: white;
+    font-weight: 700;
+    font-size: 1.1rem;
+    padding: 12px 0;
+    border: none;
+    border-radius: 12px;
+    cursor: pointer;
+    width: 100%;
+    transition: all 0.3s ease;
+    box-shadow: 0 6px 15px rgba(37, 99, 235, 0.3);
+}
+
+#continue-btn:hover {
+    background: linear-gradient(90deg, #1d4ed8, #2563eb);
+    transform: scale(1.03);
+    box-shadow: 0 8px 20px rgba(37, 99, 235, 0.4);
+}
+
+
+
+
+
+/* 📱 Responsive Design */
+@media (max-width: 992px) {
+    .checkout-wrapper {
+        grid-template-columns: 1fr;
+    }
+    .checkout-card {
+        padding: 1.5rem;
+    }
+    .checkout-title {
+        font-size: 1.5rem;
+    }
+    .order-summary img {
+        width: 150px;
+        height: 140px;
+    }
+}
+</style>
+
+<div class="checkout-container">
+    <div class="container mx-auto px-4 lg:px-12">
+        <div class="checkout-wrapper">
+
+            <!-- 🏠 Shipping Address (Left Side) -->
+            <div class="checkout-card">
+                <h3 class="checkout-title">Shipping Address</h3>
+
+                <!-- Add New Address Button -->
+<button id="add-new-btn" type="button" class="add-address-btn">
+    ➕ Add New Address
+</button>
+
+             <form id="address-form" method="POST" action="{% url 'save_address' product.id %}">
+                {% csrf_token %}
+                <input type="hidden" name="address_id" id="address_id">
+
+                <div class="form-row">
+                    <div class="form-col">
+                        <label class="checkout-label">Name</label>
+                        <input type="text" name="name" id="name" required class="checkout-input">
+                    </div>
+                    <div class="form-col">
+                        <label class="checkout-label">Mobile No</label>
+                        <input type="text" name="mobile" id="mobile" required class="checkout-input">
+                    </div>
+                    <div class="form-col">
+                        <label class="checkout-label">Alternate Mobile</label>
+                        <input type="text" name="alt_mobile" id="alt_mobile" class="checkout-input">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-col">
+                        <label class="checkout-label">Pincode</label>
+                        <input type="text" name="pincode" id="pincode" required class="checkout-input">
+                    </div>
+                    <div class="form-col">
+                        <label class="checkout-label">Locality</label>
+                        <input type="text" name="locality" id="locality" required class="checkout-input">
+                    </div>
+                    <div class="form-col">
+                        <label class="checkout-label">City / District</label>
+                        <input type="text" name="city" id="city" required class="checkout-input">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-col">
+                        <label class="checkout-label">Address</label>
+                        <textarea name="address" id="address" rows="3" required class="checkout-textarea"></textarea>
+                    </div>
+                    <div class="form-col">
+                        <label class="checkout-label">State</label>
+                        <select name="state" id="state" required class="checkout-select">
+                            {% for s in states %}
+                            <option value="{{ s }}">{{ s }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="form-col">
+                        <!-- Empty to keep 3-column layout -->
+                    </div>
+                </div>
+
+                <div class="form-row submit-row">
+                    <button type="submit" class="save-btn">💾 Save & Deliver Here</button>
+                </div>
+            </form>
+
+                <!-- Saved Addresses -->
+                <div id="saved-addresses" class="mt-6">
+                    {% for addr in user.shippingaddress_set.all %}
+                    <div class="address-box" data-id="{{ addr.id }}">
+                        <div class="address-details">
+                            <p class="font-semibold">{{ addr.name }} - {{ addr.mobile }}</p>
+                            <p class="text-gray-600 text-sm">{{ addr.address }}, {{ addr.locality }}, {{ addr.city }}, {{ addr.state }} - {{ addr.pincode }}</p>
+                        </div>
+                        <div class="address-actions flex items-center gap-2">
+                            <input type="checkbox" class="delivery-checkbox accent-blue-600" name="delivery_address" value="{{ addr.id }}" id="delivery_{{ addr.id }}">
+                            <label for="delivery_{{ addr.id }}" class="text-gray-700 font-medium">Delivered Here</label>
+                            <button class="edit-btn">Edit</button>
+                            <button class="delete-btn">Delete</button>
+                        </div>
+
+
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <!-- 🛍 Order Summary (Right Side) -->
+                <div class="checkout-card order-summary">
+                    <h3 class="checkout-title text-center">Order Summary</h3>
+
+                    <div class="order-summary-flex">
+                        <!-- Product Image -->
+                        <div class="order-img-container">
+                            <img src="{{ product.image.url }}" alt="{{ product.name }}" class="order-img">
+                        </div>
+
+                        <!-- Product Details -->
+                        <div class="order-details">
+                            <h5 class="text-lg font-semibold">{{ product.name }}</h5>
+
+                            {% if product.discount %}
+                        <!-- Original Price with Discount % -->
+                    <p class="flex items-center gap-3">
+                        <span class="line-through">₹{{ product.price }}</span>
+                        <span class="discount-badge">{{ product.discount }}% OFF</span>
+                    </p>
+
+            
+                        <!-- No discount -->
+                        <p class="text-gray-600">Price: ₹{{ product.price }}</p>
+                        {% endif %}
+
+                        {% if selected_color %}
+                        <div class="color-info">
+                            <span class="text-gray-700 font-medium">Color:</span>
+                            <div style="width:25px;height:25px;border-radius:50%;background-color:{{ selected_color }};border:1px solid #ccc;"></div>
+                        </div>
+                        {% endif %}
+
+                        <!-- Quantity Selector -->
+                        <div class="quantity-selector">
+                            <button id="decrease-btn">−</button>
+                            <span id="quantity-display" class="font-medium">{{ cart_item.quantity|default:"1" }}</span>
+                            <button id="increase-btn">+</button>
+                        </div>
+
+                        <p class="mt-3 text-xl font-bold text-gray-800">Total Payable: ₹{{ discounted_price|floatformat:2 }}</p>
+
+                        <button id="continue-btn" class="mt-4 w-full py-3 rounded text-lg">Continue to Payment</button>
+                    </div>
+                </div>
+            </div>
+
+
+        </div>
+    </div>
+</div>
+
+
+<style>
+/* Flex row for 3 columns */
+.form-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    margin-bottom: 20px;
+}
+
+/* Each column */
+.form-col {
+    flex: 1;
+    min-width: 200px; /* ensures responsive wrapping */
+    display: flex;
+    flex-direction: column;
+}
+
+/* Labels */
+.checkout-label {
+    font-weight: 600;
+    margin-bottom: 6px;
+    color: #374151;
+}
+
+/* Inputs, textarea, select */
+.checkout-input, .checkout-textarea, .checkout-select {
+    padding: 10px 12px;
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+    font-size: 1rem;
+    outline: none;
+    transition: all 0.3s;
+}
+
+.checkout-input:focus,
+.checkout-textarea:focus,
+.checkout-select:focus {
+    border-color: #2563eb;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.2);
+}
+
+/* Textarea specific */
+.checkout-textarea {
+    resize: vertical;
+}
+
+/* Button */
+.save-btn {
+    background: linear-gradient(90deg, #16a34a, #059669);
+    color: #fff;
+    font-weight: 600;
+    padding: 12px 25px;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.save-btn:hover {
+    background: linear-gradient(90deg, #059669, #16a34a);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+}
+
+/* Center submit button */
+.submit-row {
+    justify-content: center;
+    display: flex;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .form-row {
+        flex-direction: column;
+    }
+}
+</style>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+$(document).ready(function(){
+
+    // -------------------------------
+    // Quantity AJAX
+    // -------------------------------
+    function updateQuantity(action) {
+        $.ajax({
+            url: "{% url 'update_cart_quantity' product.id %}",
+            type: "POST",
+            data: {
+                'action': action,
+                'csrfmiddlewaretoken': '{{ csrf_token }}'
+            },
+            success: function(response){
+                $('#quantity-display').text(response.quantity);
+            }
+        });
+    }
+    $('#increase-btn').click(function(e){ e.preventDefault(); updateQuantity('increase'); });
+    $('#decrease-btn').click(function(e){ e.preventDefault(); updateQuantity('decrease'); });
+
+    // -------------------------------
+    // Show form or "Add New Address" button
+    // -------------------------------
+    {% if user.shippingaddress_set.all %}
+        $('#address-form').hide();
+        $('#add-new-btn').show();
+    {% else %}
+        $('#address-form').show();
+        $('#add-new-btn').hide();
+    {% endif %}
+
+    // -------------------------------
+    // Save / Edit Address AJAX
+    // -------------------------------
+    $('#address-form').submit(function(e){
+        e.preventDefault();
+
+        $.ajax({
+            url: $(this).attr('action'),
+            type: 'POST',
+            headers: {'X-Requested-With': 'XMLHttpRequest'}, // ✅ Add this header
+            data: $(this).serialize(),
+            success: function(response){
+                let html = `<div class="border p-3 mb-2 rounded flex justify-between items-start" 
+                                data-id="${response.id}" 
+                                data-alt_mobile="${response.alt_mobile}" 
+                                data-locality="${response.locality}">
+                                <div>
+                                    <p><strong>${response.name}</strong> - ${response.mobile}</p>
+                                    <p>${response.address}, ${response.locality}, ${response.city}, ${response.state} - ${response.pincode}</p>
+                                </div>
+                                <div class="flex flex-col gap-2 items-end">
+                                    <label class="flex items-center gap-1">
+                                        <input type="checkbox" class="delivery-checkbox" name="delivery_address" value="${response.id}">
+                                        Deliver Here
+                                    </label>
+                                    <button class="edit-btn bg-yellow-400 hover:bg-yellow-500 text-white px-3 py-1 rounded text-sm">Edit</button>
+                                    <button class="delete-btn bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded text-sm">Delete</button>
+                                </div>
+                            </div>`;
+
+                if(response.is_edit){ 
+                    $(`div[data-id="${response.id}"]`).replaceWith(html);
+                } else { 
+                    $('#saved-addresses').append(html);
+                }
+
+
+                // Reset form
+                $('#address-form')[0].reset();
+                $('#address_id').val('');
+                $('#address-form').hide();
+                $('#add-new-btn').show();
+            },
+            error: function(xhr, status, error){
+                console.log(xhr.responseText);
+                alert("Failed to save address! Check console for details.");
+            }
+        });
+    });
+    
+    // -------------------------------
+    // Add New Address Button
+    // -------------------------------
+    $('#add-new-btn').click(function(){
+        $('#address-form').show();
+        $('#add-new-btn').hide();
+        $('#address-form')[0].reset();
+        $('#address_id').val('');
+    });
+
+    // -------------------------------
+    // Edit Address Button
+    // -------------------------------
+    $(document).on('click', '.edit-btn', function(){
+        let parent = $(this).closest('div[data-id]');
+        let id = parent.data('id');
+        $('#address_id').val(id);
+
+        // Name & Mobile
+        let name_mobile = parent.find('p').first().text().split(' - ');
+        $('#name').val(name_mobile[0]);
+        $('#mobile').val(name_mobile[1]);
+
+        // Address, Locality, City, State - Pincode
+        let addr_full = parent.find('p').last().text();
+        let parts = addr_full.split(',');
+
+        // Address
+        let address = parts.slice(0, parts.length - 3).join(',').trim();
+        $('#address').val(address);
+
+        // Locality
+        $('#locality').val(parts[parts.length - 3].trim());
+
+        // City
+        $('#city').val(parts[parts.length - 2].trim());
+
+        // State & Pincode
+        let state_pincode = parts[parts.length - 1].trim().split('-');
+        $('#state').val(state_pincode[0].trim());
+        $('#pincode').val(state_pincode[1].trim());
+
+        // Alt Mobile
+        $('#alt_mobile').val(parent.data('alt_mobile') || '');
+
+        $('#add-new-btn').hide();
+        $('#address-form').show();
+        $('html, body').animate({ scrollTop: $('#address-form').offset().top }, 'fast');
+    });
+
+    // -------------------------------
+    // Delete Address Button
+    // -------------------------------
+    $(document).on('click', '.delete-btn', function(){
+        if(!confirm("Are you sure you want to delete this address?")) return;
+        let parent = $(this).closest('div[data-id]');
+        let id = parent.data('id');
+        $.ajax({
+            url: "{% url 'delete_address' %}",
+            type: "POST",
+            headers: {'X-Requested-With': 'XMLHttpRequest'}, // ✅ AJAX header
+            data: {
+                'id': id,
+                'csrfmiddlewaretoken': '{{ csrf_token }}'
+            },
+            success: function(response){
+                if(response.deleted){
+                    parent.remove();
+                } else {
+                    alert("Failed to delete address! " + (response.error || ""));
+                }
+            },
+            error: function(){ alert("AJAX request failed!"); }
+        });
+    });
+
+    // -------------------------------
+    // Select Delivery Address Checkbox
+    // -------------------------------
+    $(document).on('change', '.delivery-checkbox', function(){
+        $('.delivery-checkbox').not(this).prop('checked', false); // uncheck others
+        let selected_id = $(this).val();
+        $.ajax({
+            url: "{% url 'set_delivery_address' %}",
+            type: "POST",
+            headers: {'X-Requested-With': 'XMLHttpRequest'},
+            data: {
+                'address_id': selected_id,
+                'csrfmiddlewaretoken': '{{ csrf_token }}'
+            },
+            success: function(response){
+                if(response.success){
+                    console.log("Delivery address updated to ID: " + selected_id);
+                } else {
+                    alert("Failed to set delivery address.");
+                }
+            },
+            error: function(){ alert("AJAX request failed!"); }
+        });
+    });
+
+    // -------------------------------
+    // Continue button click
+    // -------------------------------
+   let selected_color = "{{ selected_color|default:'' }}"; // ye already context me hai
+
+    $('#continue-btn').click(function(e){
+        e.preventDefault();
+
+        let selected_address = $('.delivery-checkbox:checked').val();
+        if(!selected_address){
+            alert("Please select a delivery address before continuing!");
+            return;
+        }
+
+        let product_id = "{{ product.id }}";  
+
+        // ✅ pass selected_color as query param
+        window.location.href = "/payment/" + product_id + "/?color=" + encodeURIComponent(selected_color);
+    });
+
+});
+</script>
+
+
+{% endblock %} 

@@ -1,0 +1,17 @@
+{% extends 'core/base.html' %}
+
+{% block content %}
+<div class="container mx-auto mt-10">
+    <h2 class="text-2xl font-semibold mb-4">Checkout Payment</h2>
+    <p>Product: {{ product.name }}</p>
+    <p>Price: ₹{{ product.price }}</p>
+    <p>Select shipping address below:</p>
+    <ul>
+        {% for addr in shipping_addresses %}
+            <li>{{ addr.name }} - {{ addr.city }} - {{ addr.pincode }}</li>
+        {% empty %}
+            <li>No saved address found.</li>
+        {% endfor %}
+    </ul>
+</div>
+{% endblock %}

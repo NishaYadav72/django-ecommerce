@@ -1,0 +1,227 @@
+{% extends 'core/base.html' %}
+{% load static %}
+
+{% block content %}
+<style>
+/* ===== Product Grid Style ===== */
+.product-grid {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 20px;
+}
+
+/* Each Product Card */
+.product-card {
+    width: calc(20% - 16px); /* 5 per row */
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+/* Hover Effect */
+.product-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+/* Product Image */
+.product-card img {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+}
+
+/* Discount Badge */
+.discount-badge {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    background: green;
+    color: white;
+    font-size: 13px;
+    font-weight: 600;
+    padding: 5px 8px;
+    border-radius: 5px;
+    z-index: 10;
+}
+
+/* Product Body */
+.card-body {
+    text-align: center;
+    padding: 15px;
+    flex-grow: 1;
+}
+
+.card-body h5 {
+    font-weight: 600;
+    color: #007bff;
+    margin-bottom: 8px;
+}
+
+.card-body p {
+    margin-bottom: 6px;
+    color: #333;
+}
+
+/* Color Dots */
+.color-dot {
+    display: inline-block;
+    width: 15px;
+    height: 15px;
+    border-radius: 50%;
+    border: 1px solid #ccc;
+    margin-right: 3px;
+}
+
+/* Product Details List */
+.card-body ul {
+    text-align: left;
+    list-style: none;
+    padding: 0;
+    margin-top: 10px;
+}
+
+.card-body ul li {
+    font-size: 13px;
+    color: #555;
+}
+
+/* ===== Buttons at Bottom ===== */
+.action-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    padding: 10px;
+    border-top: 1px solid #eee;
+    background: #fafafa;
+}
+
+.action-buttons a {
+    flex: 1;
+    text-decoration: none;
+}
+
+.action-buttons button {
+    width: 100%;
+    border: none;
+    padding: 8px 0;
+    border-radius: 16px;
+    cursor: pointer;
+    font-size: 13px;
+    transition: background 0.3s ease, transform 0.2s ease;
+}
+
+.original-price {
+    text-decoration: line-through;
+    color: #999;
+    font-size: 14px;
+    margin-right: 5px;
+}
+
+
+/* Cart Button */
+.add-cart {
+    background: #007bff;
+    color: white;
+}
+
+.add-cart:hover {
+    background: #0056b3;
+    transform: scale(1.05);
+}
+
+/* Wishlist Button */
+.add-wishlist {
+    background: orange;
+    color: white;
+}
+
+.add-wishlist:hover {
+    background: #e53935;
+    transform: scale(1.05);
+}
+
+/* Responsive Design */
+@media (max-width: 1200px) { .product-card { width: calc(25% - 15px); } }
+@media (max-width: 992px)  { .product-card { width: calc(33.33% - 15px); } }
+@media (max-width: 768px)  { .product-card { width: calc(50% - 10px); } }
+@media (max-width: 480px)  { .product-card { width: 100%; } }
+</style>
+
+<div class="container mt-5">
+    <h2 class="text-center mb-4" style="font-weight:600; color:#333;">{{ category_name }} Products</h2>
+
+    {% if products %}
+    <div class="product-grid">
+        {% for product in products %}
+        <div class="product-card">
+            {% if product.discount %}
+                <span class="discount-badge">{{ product.discount }}% OFF</span>
+            {% endif %}
+
+            <!-- Product Image -->
+            <a href="{% url 'details_product' product.id %}">
+                {% if product.image %}
+                <img src="{{ product.image.url }}" alt="{{ product.name }}">
+                {% else %}
+                <img src="{% static 'images/default-product.png' %}" alt="{{ product.name }}">
+                {% endif %}
+            </a>
+
+            <!-- Product Info -->
+            <div class="card-body">
+                <h5>
+                    <a href="{% url 'details_product' product.id %}" style="text-decoration:none; color:#007bff;">
+                        {{ product.name }}
+                    </a>
+                </h5>
+
+                {% if product.discount %}
+                <div class="price-box">
+                    <span class="original-price">₹{{ product.price }}</span>
+                    <span class="discounted-price">₹{{ product.discounted_price|floatformat:2 }}</span>
+                </div>
+                {% else %}
+                <p class="discounted-price">₹{{ product.price }}</p>
+                {% endif %}
+
+
+               
+
+                {% if product.details %}
+                <ul>
+                    {% for key, value in product.details.items %}
+                    <li>{{ key }}: {{ value }}</li>
+                    {% endfor %}
+                </ul>
+                {% endif %}
+            </div>
+
+            <!-- Fixed Bottom Buttons -->
+            <div class="action-buttons">
+                <a href="{% url 'add_to_cart' product.id %}">
+                    <button class="add-cart"><i class="fa fa-shopping-cart"></i> Add to Cart</button>
+                </a>
+                <a href="{% url 'add_to_wishlist' product.id %}">
+                    <button class="add-wishlist"><i class="fa fa-heart"></i> Wishlist</button>
+                </a>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <p class="text-center">No products added yet for this category.</p>
+    {% endif %}
+</div>
+
+<!-- Font Awesome -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+{% endblock %}

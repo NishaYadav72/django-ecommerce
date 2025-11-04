@@ -1,0 +1,142 @@
+{% extends 'core/base.html' %}
+{% block content %}
+<div class="container mt-5">
+    <h2 class="text-center mb-4" style="color:#1e3a8a; font-weight:700;">Return Confirmation</h2>
+
+    <!-- Product Details Card -->
+    <div class="return-card">
+        <div class="product-flex">
+            <div class="product-image">
+                {% if product.image %}
+                    <img src="{{ product.image.url }}" alt="{{ product.name }}">
+                {% else %}
+                    <div class="no-image">No Image</div>
+                {% endif %}
+            </div>
+            <div class="product-info">
+                <h5>{{ product.name }}</h5>
+                <p><strong>Quantity:</strong> {{ order.quantity }}</p>
+                <p><strong>Price per item:</strong> ₹{{ product.price|floatformat:2 }}</p>
+                {% if product.discount %}
+                <p><strong>Discount:</strong> {{ product.discount }}%</p>
+                {% endif %}
+                <p><strong>Total Price:</strong> ₹{{ order.total_price|floatformat:2 }}</p>
+                {% if order.color %}
+                    <p>
+                        <strong>Selected Color:</strong>
+                        <span class="color-circle" style="background-color: {{ order.color }}"></span>
+                    </p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Return Details -->
+    <div class="return-details text-center">
+        <p><strong>Order ID:</strong> {{ order_id }}</p>
+        <p><strong>Reason for Return:</strong> {{ reason }}</p>
+        <p><strong>Your Comment:</strong> {{ comment|default:"No comment provided" }}</p>
+        <p class="success-msg">Your return request has been recorded successfully!</p>
+    </div>
+</div>
+
+<style>
+/* Card style */
+.return-card {
+    max-width: 650px;
+    margin: 20px auto 40px;
+    padding: 20px;
+    background: #ffffff;
+    border-radius: 15px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+.return-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 25px rgba(0,0,0,0.12);
+}
+
+/* Flex layout for product */
+.product-flex {
+    display: flex;
+    gap: 20px;
+    align-items: center;
+    flex-wrap: wrap;
+}
+.product-image img {
+    width: 150px;
+    height: 150px;
+    object-fit: cover;
+    border-radius: 12px;
+    border: 1px solid #e2e8f0;
+}
+.no-image {
+    width: 150px;
+    height: 150px;
+    background: #f1f5f9;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #94a3b8;
+    border-radius: 12px;
+    border: 1px solid #e2e8f0;
+}
+
+/* Product info styling */
+.product-info h5 {
+    font-size: 20px;
+    font-weight: 600;
+    color: #1e3a8a;
+    margin-bottom: 10px;
+}
+.product-info p {
+    margin: 4px 0;
+    color: #4b5563;
+    font-size: 14.5px;
+}
+
+/* Color circle */
+.color-circle {
+    display: inline-block;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    border: 2px solid #d1d5db;
+    vertical-align: middle;
+    margin-left: 6px;
+}
+
+/* Return details section */
+.return-details {
+    max-width: 600px;
+    margin: 0 auto;
+    background: #f0f9ff;
+    padding: 20px;
+    border-radius: 12px;
+    border-left: 5px solid #3b82f6;
+}
+.return-details p {
+    font-size: 15px;
+    margin: 8px 0;
+    color: #1e3a8a;
+}
+.success-msg {
+    margin-top: 15px;
+    font-weight: 600;
+    color: #16a34a;
+    font-size: 16px;
+}
+
+/* Responsive */
+@media(max-width: 600px) {
+    .product-flex {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+    }
+    .product-info {
+        margin-top: 10px;
+    }
+}
+</style>
+{% endblock %}

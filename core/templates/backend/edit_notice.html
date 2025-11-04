@@ -1,0 +1,31 @@
+{% extends 'backend/admin_base.html' %}
+{% block title %}Edit Notice{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1 class="mb-4 text-primary">Edit Notice</h1>
+    <form method="POST" enctype="multipart/form-data" class="p-4 border rounded shadow-sm bg-light">
+        {% csrf_token %}
+        
+        <div class="mb-3">
+            <label for="title" class="form-label">Notice Title</label>
+            <input type="text" class="form-control" id="title" name="title" value="{{ notice.title }}" required>
+        </div>
+
+        <div class="mb-3">
+            <label for="image" class="form-label">Notice Image</label><br>
+            {% if notice.image %}
+            <img src="{{ notice.image.url }}" style="width:120px; height:90px; object-fit:cover; margin-bottom:10px;">
+            {% endif %}
+            <input type="file" class="form-control" id="image" name="image">
+        </div>
+
+        <div class="mb-3">
+            <label for="message" class="form-label">Notice Message</label>
+            <textarea class="form-control" id="message" name="message" rows="4" required>{{ notice.message }}</textarea>
+        </div>
+
+        <button type="submit" class="btn btn-primary w-100">Update Notice</button>
+    </form>
+</div>
+{% endblock %}

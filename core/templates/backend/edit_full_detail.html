@@ -1,0 +1,45 @@
+{% extends 'backend/admin_base.html' %}
+{% block content %}
+<h2>Edit Full Details for {{ product.name }}</h2>
+
+<form method="post">{% csrf_token %}
+    <div id="details-wrapper">
+        {% for key, value in product.full_details.items %}
+        <div class="row mb-2">
+            <div class="col"><input type="text" name="key" value="{{ key }}"></div>
+            <div class="col"><input type="text" name="value" value="{{ value }}"></div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <button type="button" id="add-detail" class="btn btn-sm btn-secondary">Add More</button>
+    <input type="hidden" name="full_details" id="full_details_input">
+    <button type="submit" class="btn btn-success mt-2">Save Changes</button>
+</form>
+
+<script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+<script>
+$(document).ready(function(){
+    $('#add-detail').click(function(){
+        $('#details-wrapper').append(`
+            <div class="row mb-2">
+                <div class="col"><input type="text" name="key" placeholder="Detail Name"></div>
+                <div class="col"><input type="text" name="value" placeholder="Detail Value"></div>
+            </div>
+        `);
+    });
+
+    $('form').submit(function(){
+        let data = {};
+        $('input[name="key"]').each(function(i){
+            let key = $(this).val();
+            let value = $('input[name="value"]').eq(i).val();
+            if(key && value){
+                data[key] = value;
+            }
+        });
+        $('#full_details_input').val(JSON.stringify(data));
+    });
+});
+</script>
+{% endblock %}

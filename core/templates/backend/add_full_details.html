@@ -1,0 +1,97 @@
+{% extends 'backend/admin_base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container">
+    <h2 class="mb-4">Add Full Details</h2>
+    
+    <form method="post" id="full-details-form">
+        {% csrf_token %}
+        <!-- Category -->
+        <div class="mb-3">
+            <label for="category">Select Category</label>
+            <select id="category" class="form-control" required>
+                <option value="">-- Select Category --</option>
+                {% for cat in categories %}
+                <option value="{{ cat.id }}">{{ cat.name }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <!-- Shop Product -->
+        <div class="mb-3">
+            <label for="shop_product">Select Product</label>
+            <select id="shop_product" name="shop_product" class="form-control" required>
+                <option value="">-- Select Product --</option>
+            </select>
+        </div>
+
+        <!-- Full Details Key-Value -->
+        <div id="details-container">
+            <h5>Add Details</h5>
+            <div class="detail-row mb-2">
+                <input type="text" class="form-control mb-1 key-input" placeholder="Detail Name">
+                <input type="text" class="form-control mb-1 value-input" placeholder="Detail Value">
+                <button type="button" class="btn btn-danger remove-detail">Remove</button>
+            </div>
+        </div>
+        <button type="button" id="add-detail" class="btn btn-primary mb-3">Add Another Detail</button>
+
+        <!-- Hidden input to store JSON -->
+        <input type="hidden" name="full_details" id="full_details_input">
+
+        <button type="submit" class="btn btn-success">Save Full Details</button>
+    </form>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+$(document).ready(function(){
+    // AJAX to get shop products
+    $('#category').change(function(){
+        var cat_id = $(this).val();
+        $('#shop_product').html('<option value="">Loading...</option>');
+        if(cat_id){
+            $.get("{% url 'get_shop_products' %}", {category_id: cat_id}, function(data){
+                var options = '<option value="">-- Select Product --</option>';
+                data.shop_products.forEach(function(sp){
+                    options += `<option value="${sp.id}">${sp.name}</option>`;
+                });
+                $('#shop_product').html(options);
+            });
+        } else {
+            $('#shop_product').html('<option value="">-- Select Product --</option>');
+        }
+    });
+
+    // Add new detail row
+    $('#add-detail').click(function(){
+        $('#details-container').append(`
+            <div class="detail-row mb-2">
+                <input type="text" class="form-control mb-1 key-input" placeholder="Detail Name">
+                <input type="text" class="form-control mb-1 value-input" placeholder="Detail Value">
+                <button type="button" class="btn btn-danger remove-detail">Remove</button>
+            </div>
+        `);
+    });
+
+    // Remove detail row
+    $(document).on('click', '.remove-detail', function(){
+        $(this).closest('.detail-row').remove();
+    });
+
+    // On form submit, create JSON
+    $('#full-details-form').submit(function(e){
+        var details = {};
+        $('.detail-row').each(function(){
+            var key = $(this).find('.key-input').val();
+            var value = $(this).find('.value-input').val();
+            if(key && value){
+                details[key] = value;
+            }
+        });
+        $('#full_details_input').val(JSON.stringify(details));
+    });
+});
+</script>
+{% endblock %}
