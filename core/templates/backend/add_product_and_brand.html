@@ -1,0 +1,68 @@
+{% extends 'backend/admin_base.html' %}
+
+{% block content %}
+<div class="container">
+
+    <!-- Add Product Name -->
+    <h2 class="mb-4" style="font-weight:600; color:#333;">Add Category</h2>
+    <form method="POST" class="mb-4">{% csrf_token %}
+        <input type="hidden" name="form_type" value="product_name">
+        <div class="mb-3">
+            <input type="text" name="product_name" class="form-control" placeholder="Enter Category Name" required>
+        </div>
+        <button type="submit" class="btn btn-primary">Add Category</button>
+    </form>
+
+    <!-- Existing Categories -->
+    <h3 class="mb-3">Existing Categories</h3>
+    <ul class="list-group mb-5">
+        {% for product in product_names %}
+            <li class="list-group-item d-flex justify-content-between align-items-center">
+                {{ product.name }}
+                <div>
+                    <a href="{% url 'edit_product_name' product.id %}" class="btn btn-sm btn-warning">Edit</a>
+                    <a href="{% url 'delete_product_name' product.id %}" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure?');">Delete</a>
+                </div>
+            </li>
+        {% empty %}
+            <li class="list-group-item">No categories added yet.</li>
+        {% endfor %}
+    </ul>
+
+    <!-- Add Brand -->
+    <h2 class="mb-4" style="font-weight:600; color:#333;">Add Brand</h2>
+    <form method="POST" class="mb-4">{% csrf_token %}
+        <input type="hidden" name="form_type" value="brand">
+        <div class="mb-3">
+            <label for="product" class="form-label">Select Category</label>
+            <select name="product" id="product" class="form-select" required>
+                <option value="">Select Category</option>
+                {% for product in product_names %}
+                    <option value="{{ product.id }}">{{ product.name }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="mb-3">
+            <input type="text" name="brand_name" class="form-control" placeholder="Enter Brand Name" required>
+        </div>
+        <button type="submit" class="btn btn-success">Add Brand</button>
+    </form>
+
+    <!-- Existing Brands -->
+    <h3 class="mb-3">Existing Brands</h3>
+    <ul class="list-group">
+        {% for brand in brands %}
+            <li class="list-group-item d-flex justify-content-between align-items-center">
+                {{ brand.product.name }} - {{ brand.name }}
+                <div>
+                    <a href="{% url 'edit_brand_name' brand.id %}" class="btn btn-sm btn-warning">Edit</a>
+                    <a href="{% url 'delete_brand_name' brand.id %}" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure?');">Delete</a>
+                </div>
+            </li>
+        {% empty %}
+            <li class="list-group-item">No brands added yet.</li>
+        {% endfor %}
+    </ul>
+
+</div>
+{% endblock %}

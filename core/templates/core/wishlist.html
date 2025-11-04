@@ -1,0 +1,109 @@
+{% extends 'core/base.html' %}
+
+{% block content %}
+<div class="container mt-5" style="padding-left:280px; padding-right:280px;">
+    <h2 class="mb-4 text-center" style="font-weight:600; font-size:2rem; color:#333;">My Wishlist</h2>
+
+    {% if wishlist_items %}
+        <div class="wishlist-list" style="display:flex; flex-direction:column; gap:12px;">
+            {% for item in wishlist_items %}
+            <div class="wishlist-row" style="display:flex; align-items:center; justify-content:space-between;
+                                             border:1px solid #ddd; border-radius:8px; padding:8px 12px;
+                                             box-shadow:0 1px 4px rgba(0,0,0,0.08); transition:all 0.3s;">
+                
+                <!-- Left: Image -->
+<div class="wishlist-image" style="flex:0 0 100px; height:100px; overflow:hidden; border-radius:6px; margin-right:12px;">
+    <a href="{% url 'details_product' item.product.id %}">
+        <img src="{{ item.product.image.url }}" alt="{{ item.product.name }}" 
+             style="width:100%; height:100%; object-fit:cover;">
+    </a>
+</div>
+
+<!-- Middle: Product Name & Price -->
+<div class="wishlist-info" style="flex:1; display:flex; flex-direction:column; justify-content:center; gap:4px;">
+    <p style="font-weight:700; font-size:0.95rem; color:#333; margin:0;">
+        <a href="{% url 'details_product' item.product.id %}" style="text-decoration:none; color:inherit;">
+            {{ item.product.name }}
+        </a>
+    </p>
+
+    {% if item.product.discount %}
+    <p style="margin:0;">
+        <span style="text-decoration:line-through; color:gray; font-size:0.85rem;">₹{{ item.product.price|floatformat:2 }}</span>
+        <span style="color:#28a745; font-weight:600; font-size:0.85rem; margin-left:6px;">
+            ₹{{ item.product.final_price|floatformat:2 }}
+        </span>
+    </p>
+    <p style="color:red; font-weight:600; font-size:0.8rem; margin:0;">{{ item.product.discount }}% OFF</p>
+    {% else %}
+    <p style="color:#555; font-size:0.85rem; margin:0;">₹{{ item.product.price|floatformat:2 }}</p>
+    {% endif %}
+</div>
+
+
+
+                <!-- Right: Delete Button -->
+                <div class="wishlist-delete">
+                    <a href="{% url 'remove_from_wishlist' item.id %}" class="btn btn-sm btn-danger">
+                        <i class="bi bi-trash"></i>
+                    </a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p style="text-align:center; color:#555; font-size:1.2rem;">Your wishlist is empty.</p>
+    {% endif %}
+</div>
+
+<style>
+.wishlist-row:hover {
+    box-shadow:0 3px 8px rgba(0,0,0,0.12);
+    transform: translateY(-1px);
+    transition: all 0.3s;
+}
+
+/* Mobile Responsive */
+@media (max-width: 992px) {
+    .container {
+        padding-left: 40px !important;
+        padding-right: 40px !important;
+    }
+}
+
+@media (max-width: 768px) {
+    .wishlist-row {
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 10px;
+    }
+    .wishlist-image {
+        width: 100%;
+        height: 200px;
+        margin-right: 0;
+        margin-bottom: 10px;
+    }
+    .wishlist-info {
+        width: 100%;
+    }
+    .wishlist-delete {
+        width: 100%;
+        display: flex;
+        justify-content: flex-end;
+        margin-top: 10px;
+    }
+}
+
+@media (max-width: 480px) {
+    .wishlist-row {
+        padding: 8px;
+    }
+    .wishlist-image {
+        height: 180px;
+    }
+    .wishlist-info p {
+        font-size: 0.85rem;
+    }
+}
+</style>
+{% endblock %}

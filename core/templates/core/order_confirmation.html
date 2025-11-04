@@ -1,0 +1,185 @@
+{% extends 'core/base.html' %}
+{% block content %}
+<div class="confirmation-page">
+    <div class="confirmation-card">
+        <!-- Success Icon -->
+        <div class="icon-wrapper">
+            <svg class="success-icon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"></path>
+            </svg>
+        </div>
+
+        <!-- Heading -->
+        <h2 class="heading">🎉 Order Confirmed!</h2>
+
+        <!-- Product Info -->
+        <p class="product-info">
+            Your order for <strong>{{ order.product.name }}</strong> has been successfully placed.
+        </p>
+
+        <!-- Amount -->
+        <p class="total-amount">
+            Total Amount: <span>₹{{ order.total_price }}</span>
+        </p>
+
+        <!-- Continue Shopping Button -->
+        <a href="{% url 'home' %}" class="continue-btn">
+            Continue Shopping
+        </a>
+
+        <!-- Optional Note -->
+        <p class="note">You will receive an email confirmation shortly.</p>
+    </div>
+</div>
+
+<!-- Confetti Canvas -->
+<canvas id="confetti-canvas"></canvas>
+
+<style>
+/* Page Centering */
+.confirmation-page {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 50px 20px;
+    min-height: 80vh;
+    background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+    position: relative;
+    overflow: hidden;
+}
+
+/* Card Styling */
+.confirmation-card {
+    background-color: #ffffff;
+    border-radius: 20px;
+    padding: 40px 30px;
+    max-width: 450px;
+    width: 100%;
+    text-align: center;
+    box-shadow: 0 15px 35px rgba(0,0,0,0.15);
+    transition: transform 0.3s ease;
+    z-index: 10;
+    position: relative;
+    animation: bounceIn 0.8s ease forwards;
+}
+
+/* Success Icon */
+.icon-wrapper {
+    margin-bottom: 25px;
+}
+.success-icon {
+    width: 70px;
+    height: 70px;
+    color: #16a34a;
+    animation: scaleUp 0.8s ease forwards;
+}
+
+/* Heading */
+.heading {
+    font-size: 2.2rem;
+    font-weight: 800;
+    color: #16a34a;
+    margin-bottom: 20px;
+}
+
+/* Product Info */
+.product-info {
+    font-size: 1rem;
+    color: #374151;
+    margin-bottom: 15px;
+}
+
+/* Total Amount */
+.total-amount {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: #16a34a;
+    margin-bottom: 25px;
+}
+
+/* Button */
+.continue-btn {
+    display: inline-block;
+    background: linear-gradient(90deg, #2563eb, #1d4ed8);
+    color: white;
+    font-weight: 600;
+    padding: 12px 25px;
+    border-radius: 12px;
+    text-decoration: none;
+    box-shadow: 0 6px 15px rgba(37, 99, 235, 0.4);
+    transition: all 0.3s ease;
+}
+
+.continue-btn:hover {
+    background: linear-gradient(90deg, #1d4ed8, #2563eb);
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(37, 99, 235, 0.5);
+}
+
+/* Optional Note */
+.note {
+    font-size: 0.9rem;
+    color: #6b7280;
+    margin-top: 15px;
+}
+
+/* Responsive */
+@media (max-width: 640px) {
+    .confirmation-card {
+        padding: 30px 20px;
+    }
+    .heading {
+        font-size: 1.8rem;
+    }
+    .success-icon {
+        width: 60px;
+        height: 60px;
+    }
+}
+
+/* Icon animation */
+@keyframes scaleUp {
+    0% { transform: scale(0); opacity: 0; }
+    60% { transform: scale(1.2); opacity: 1; }
+    100% { transform: scale(1); }
+}
+
+/* Card bounce */
+@keyframes bounceIn {
+    0% { transform: translateY(-50px); opacity: 0; }
+    60% { transform: translateY(10px); opacity: 1; }
+    100% { transform: translateY(0); }
+}
+
+/* Confetti Canvas */
+#confetti-canvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 5;
+}
+</style>
+
+<!-- Confetti JS -->
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    // Fire confetti for 2 seconds
+    const duration = 2 * 1000;
+    const animationEnd = Date.now() + duration;
+    const defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 999 };
+
+    const interval = setInterval(function() {
+        const timeLeft = animationEnd - Date.now();
+        if (timeLeft <= 0) return clearInterval(interval);
+
+        const particleCount = 50 * (timeLeft / duration);
+        // since particles fall down, we skew start a little
+        confetti(Object.assign({}, defaults, { particleCount, origin: { x: Math.random(), y: Math.random() - 0.2 } }));
+    }, 250);
+});
+</script>
+{% endblock %}

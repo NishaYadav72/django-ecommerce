@@ -1,0 +1,89 @@
+{% extends 'backend/admin_base.html' %}
+
+{% block title %}Manage Headphones Products{% endblock %}
+
+{% block content %}
+<h2>Headphones Products</h2>
+
+<div class="table-responsive">
+<table class="table table-bordered table-striped mt-3">
+    <thead class="table-dark">
+        <tr>
+            <th>ID</th>
+            <th>Product Name</th>
+            <th>Brand</th>
+            <th>Color</th>
+            <th>Compatible With</th>
+            <th>Image</th>
+            <th>Price (₹)</th>
+            <th>Discount (%)</th>
+                        <th>Color</th> <!-- ✅ New Column -->
+            <th>Quantity</th> <!-- ✅ Added Quantity Column -->
+
+            <th>Category</th>
+            <th>Date Added</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for product in products %}
+        <tr>
+            <td>{{ product.id }}</td>
+            <td>{{ product.name }}</td>
+            <td>
+                {% if product.brand %}
+                    {{ product.brand.name }}
+                {% else %}
+                    N/A
+                {% endif %}
+            </td>
+            <td>{{ product.color|default:"N/A" }}</td>
+            <td>{{ product.compatible_with|default:"N/A" }}</td>
+            <td>
+                {% if product.image %}
+                    <img src="{{ product.image.url }}" width="50" height="50" alt="{{ product.name }}">
+                {% else %}
+                    No Image
+                {% endif %}
+            </td>
+            <td>{{ product.price }}</td>
+            <td>{{ product.discount|default:"0" }}</td>
+
+             <!-- ✅ Color Display -->
+            <td>
+    {% if product.colors.all %}
+        {% for color in product.colors.all %}
+            {{ color.name }}{% if not forloop.last %}, {% endif %}
+        {% endfor %}
+    {% else %}
+        -
+    {% endif %}
+</td>
+
+<!-- ✅ Quantity Display -->
+            <td>{{ product.quantity|default:"0" }}</td>
+            
+
+            <td>
+                {% if product.category %}
+                    {{ product.category.name }}
+                {% else %}
+                    N/A
+                {% endif %}
+            </td>
+            <td>{{ product.created_at|date:"d-m-Y H:i" }}</td>
+            <td>
+                <a href="{% url 'edit_headphones_product' product.id %}" class="btn btn-sm btn-primary mb-1">Edit</a>
+                <a href="{% url 'delete_headphones_product' product.id %}" class="btn btn-sm btn-danger mb-1" onclick="return confirm('Are you sure you want to delete this product?');">Delete</a>
+            </td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="11">No Headphones products found.</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+</div>
+
+{% endblock %}

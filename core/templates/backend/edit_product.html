@@ -1,0 +1,32 @@
+{% extends 'backend/admin_base.html' %}
+{% block title %}Edit Product{% endblock %}
+
+{% block content %}
+<h1>Edit Product</h1>
+<form method="POST" enctype="multipart/form-data">
+    {% csrf_token %}
+    <label>Section:</label><br>
+    <select name="category" required>
+        <option value="latest" {% if product.category == 'latest' %}selected{% endif %}>Latest Launches</option>
+        <option value="mobile" {% if product.category == 'mobile' %}selected{% endif %}>Best Mobiles</option>
+        <option value="other" {% if product.category == 'other' %}selected{% endif %}>Other</option>
+    </select><br><br>
+
+    <label>Product Name:</label><br>
+    <input type="text" name="name" value="{{ product.name }}" required><br><br>
+
+    <label>Price:</label><br>
+    <input type="number" name="price" value="{{ product.price }}" required><br><br>
+
+    <label>Discount (%):</label><br>
+    <input type="number" name="discount" value="{{ product.discount }}"><br><br>
+
+    <label>Image:</label><br>
+    <input type="file" name="image"><br>
+    {% if product.image %}
+        <img src="{{ product.image.url }}" height="100" width="100" class="img-thumbnail mt-2">
+    {% endif %}<br><br>
+
+    <button type="submit" class="btn btn-primary">Update Product</button>
+</form>
+{% endblock %}

@@ -1,0 +1,96 @@
+{% extends 'core/base.html' %}
+
+{% block title %}Superuser Login{% endblock %}
+
+{% block content %}
+<div class="admin-login-container">
+    <h2>Superuser Login</h2>
+
+    {% if messages %}
+        {% for message in messages %}
+            <p class="login-error">{{ message }}</p>
+        {% endfor %}
+    {% endif %}
+
+    <form method="POST" action="{% url 'admin_login_page' %}">
+        {% csrf_token %}
+
+        <!-- Hidden dummy inputs to prevent browser autofill -->
+        <input type="text" style="display:none">
+        <input type="password" style="display:none">
+
+        <input type="text" name="username" placeholder="Username" required autocomplete="username"><br><br>
+        <input type="password" name="password" placeholder="Password" required autocomplete="new-password"><br><br>
+        <button type="submit">Login</button>
+    </form>
+</div>
+
+<style>
+.admin-login-container {
+    max-width: 400px;
+    margin: 80px auto;
+    padding: 40px 30px;
+    border-radius: 20px;
+    background: linear-gradient(135deg, #111, #1a1a1a);
+    color: #fff;
+    text-align: center;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.5);
+    transition: all 0.3s;
+}
+
+.admin-login-container:hover {
+    transform: translateY(-5px);
+}
+
+.admin-login-container h2 {
+    color: #ff4d6d;
+    margin-bottom: 25px;
+    font-size: 2rem;
+    letter-spacing: 1px;
+}
+
+.admin-login-container input {
+    width: 90%;
+    padding: 12px 15px;
+    margin-bottom: 20px;
+    border-radius: 10px;
+    border: none;
+    outline: none;
+    font-size: 1rem;
+    background-color: #222;
+    color: #fff;
+    transition: 0.3s;
+}
+
+.admin-login-container input::placeholder {
+    color: #bbb;
+}
+
+.admin-login-container input:focus {
+    background-color: #333;
+}
+
+.admin-login-container button {
+    width: 50%;
+    padding: 12px 0;
+    border-radius: 10px;
+    border: none;
+    background: #ffed6f;
+    color: #111;
+    font-weight: bold;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: 0.3s;
+}
+
+.admin-login-container button:hover {
+    background: #ffd700;
+}
+
+.login-error {
+    color: #ff4d6d;
+    font-weight: bold;
+    margin-bottom: 15px;
+}
+</style>
+{% endblock %}
