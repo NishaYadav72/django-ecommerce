@@ -1,0 +1,113 @@
+1:[
+2:  {
+3:    "model": "core.productname",
+4:    "pk": 1,
+5:    "fields": {
+6:      "name": "Laptop"
+7:    }
+8:  },
+9:  {
+10:    "model": "core.productname",
+11:    "pk": 2,
+12:    "fields": {
+13:      "name": "Smartphone"
+14:    }
+15:  },
+16:  {
+17:    "model": "core.productname",
+18:    "pk": 3,
+19:    "fields": {
+20:      "name": "Headphones"
+21:    }
+22:  },
+23:  {
+24:    "model": "core.brandname",
+25:    "pk": 1,
+26:    "fields": {
+27:      "name": "Dell",
+28:      "product": 1
+29:    }
+30:  },
+31:  {
+32:    "model": "core.brandname",
+33:    "pk": 2,
+34:    "fields": {
+35:      "name": "Samsung",
+36:      "product": 2
+37:    }
+38:  },
+39:  {
+40:    "model": "core.brandname",
+41:    "pk": 3,
+42:    "fields": {
+43:      "name": "Boat",
+44:      "product": 3
+45:    }
+46:  },
+47:  {
+48:    "model": "core.shopproduct",
+49:    "pk": 1,
+50:    "fields": {
+51:      "name": "Laptop",
+52:      "product": 1,
+53:      "brand": 1,
+54:      "price": 55000,
+55:      "discount": 10,
+56:      "quantity": 10,
+57:      "colors": "Black,Silver",
+58:      "image": "shop_products/laptop.jpg",
+59:      "details": {"RAM": "16GB", "Storage": "512GB SSD"},
+60:      "full_details": {"Processor": "Intel i7", "Warranty": "1 Year"},
+61:      "specifications": {"Display": "15.6 inch", "Battery": "8 hours"},
+62:      "latest_launch": true,
+63:      "best_deal": false,
+64:      "show_in_shop": true,
+65:      "is_home_similar": true,
+66:      "section": "latest"
+67:    }
+68:  },
+69:  {
+70:    "model": "core.shopproduct",
+71:    "pk": 2,
+72:    "fields": {
+73:      "name": "Smartphone",
+74:      "product": 2,
+75:      "brand": 2,
+76:      "price": 30000,
+77:      "discount": 5,
+78:      "quantity": 20,
+79:      "colors": "Blue,Black",
+80:      "image": "shop_products/mobile.jpg",
+81:      "details": {"Camera": "108MP", "Battery": "5000mAh"},
+82:      "full_details": {"Processor": "Snapdragon 8 Gen 1", "Warranty": "1 Year"},
+83:      "specifications": {"Display": "6.7 inch", "Charging": "Fast 67W"},
+84:      "latest_launch": false,
+85:      "best_deal": true,
+86:      "show_in_shop": true,
+87:      "is_home_similar": true,
+88:      "section": "deals"
+89:    }
+90:  },
+91:  {
+92:    "model": "core.shopproduct",
+93:    "pk": 3,
+94:    "fields": {
+95:      "name": "Headphones",
+96:      "product": 3,
+97:      "brand": 3,
+98:      "price": 1500,
+99:      "discount": 15,
+100:      "quantity": 50,
+101:      "colors": "Black,White",
+102:      "image": "shop_products/headphones.jpg",
+103:      "details": {"Type": "Bluetooth", "Range": "10m"},
+104:      "full_details": {"Battery": "20 hours", "Warranty": "6 months"},
+105:      "specifications": {"Weight": "200g", "Mic": "Yes"},
+106:      "latest_launch": false,
+107:      "best_deal": false,
+108:      "show_in_shop": true,
+109:      "is_home_similar": true,
+110:      "section": "other"
+111:    }
+112:  }
+113:]

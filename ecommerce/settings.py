@@ -118,17 +118,19 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 
+# Static files (CSS, JavaScript, Images)
 STATIC_URL = '/static/'
 STATIC_ROOT = BASE_DIR / 'staticfiles'
-# settings.py
+
+# Media files (uploaded images)
+import os
 MEDIA_URL = '/media/'
-MEDIA_ROOT = BASE_DIR / 'media'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 # Default primary key field type
-# https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
-
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
 # Authentication settings
-LOGIN_URL = '/login/'              # ✅ aapke login ka correct URL
-LOGIN_REDIRECT_URL = '/dashboard/' # ✅ login ke baad kaha redirect ho
+LOGIN_URL = '/login/'              # ✅ login ka URL
+LOGIN_REDIRECT_URL = '/dashboard/' # ✅ login ke baad redirect
 LOGOUT_REDIRECT_URL = '/'          # ✅ logout ke baad home
