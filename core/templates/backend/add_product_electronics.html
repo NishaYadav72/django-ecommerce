@@ -1,9 +1,0 @@
-{% extends 'backend/add_categories_products.html' %}
-
-{% block category_fields %}
-{% if category.name == "Electronics" %}
-<div class="mb-3">
-    <input type="text" name="warranty" class="form-control" placeholder="Warranty (years)">
-</div>
-{% endif %}
-{% endblock %}
